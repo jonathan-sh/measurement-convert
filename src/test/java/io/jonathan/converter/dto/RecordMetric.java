@@ -8,7 +8,7 @@ import static io.jonathan.converter.Measurement.CELSIUS;
 import static io.jonathan.converter.Measurement.FAHRENHEIT;
 
 
-public record RecordMetricExampleData(
+public record RecordMetric(
         @MeasurementConvert(current = CELSIUS, metric = CELSIUS, imperial = FAHRENHEIT)
         String temperature,
 

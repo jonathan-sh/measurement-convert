@@ -18,25 +18,17 @@ import io.jonathan.converter.functions.impl.SquareMeterAcres;
 import io.jonathan.converter.functions.impl.SquareMeterHectares;
 
 import java.lang.reflect.Field;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
 
 public class Processor {
-
     public static final Map<String, Function<Double, Double>> CONVERTER_FUNCTION_MAP = new HashMap<>();
-    public static final List<Class<?>> NOT_ALLOW_PERFORM_REFLECTION = List.of(String.class, Integer.class, Long.class,
-            Boolean.class, LocalDateTime.class, LocalDate.class, Object.class, Double.class, List.class, Map.class, HashMap.class);
-    public static final String INTEIRO = "#";
+    public static final String INTEGER = "#";
     public static final String DECIMAL = "#.##";
-    private static final List<String> LIST_KEYS = List.of("arraylist", "immutablecollections");
 
     static {
-
         pushConvertFunction(new CelsiusFahrenheit());
         pushConvertFunction(new CentimeterFoots());
         pushConvertFunction(new CentimeterInches());
@@ -52,13 +44,6 @@ public class Processor {
         pushConvertFunction(new PascalPoundsPerSquareInch());
     }
 
-    public static Boolean isString(Class clazz) {
-        return clazz.equals(String.class);
-    }
-
-    public static Boolean requireReflection(Class clazz) {
-        return !NOT_ALLOW_PERFORM_REFLECTION.contains(clazz);
-    }
 
     private static void pushConvertFunction(ConvertFunction convertFunction) {
         var keyToApply = convertFunction.from() + "_" + convertFunction.to();
@@ -68,7 +53,7 @@ public class Processor {
     }
 
 
-    public static String getConvertValue(Field field, Object value, SystemType systemType, Class<?> originClass) {
+    public static Object getConvertValue(Field field, Object value, SystemType systemType, Object father) {
         MeasurementConvert config = field.getAnnotation(MeasurementConvert.class);
         var from = config.current();
         var to = config.metric();
@@ -79,21 +64,29 @@ public class Processor {
         try {
             doubleValue = Double.parseDouble(value.toString());
         } catch (Exception e) {
-            var file = originClass.getName() + "." + field.getName();
+            var file = father.getClass().getName() + "." + field.getName();
             throw new RuntimeException("The value [" + value + "] inside (" + file + ") " +
                     "is not a valid number string. Remove @MeasurementConvert or fix it.");
         }
 
+        Object newValue = null;
 
-        if (from == to) return getRound(doubleValue, systemType, formatterPatter) + to.symbol;
+        if (from == to) {
+            newValue = getRound(doubleValue, systemType, formatterPatter);
+        } else {
+            var functionKey = from + "_" + to;
+            if (!CONVERTER_FUNCTION_MAP.containsKey(functionKey)) {
+                throw new RuntimeException("Convert function [" + functionKey + "] not implemented yet");
+            }
 
-        var functionKey = from + "_" + to;
-        if (!CONVERTER_FUNCTION_MAP.containsKey(functionKey)) {
-            throw new RuntimeException("Convert function [" + functionKey + "] not implemented yet");
+            var converted = CONVERTER_FUNCTION_MAP.get(functionKey).apply(doubleValue);
+            newValue = getRound(converted, systemType, formatterPatter);
         }
 
-        var newValue = CONVERTER_FUNCTION_MAP.get(functionKey).apply(doubleValue);
-        return getRound(newValue, systemType, formatterPatter) + to.symbol;
+        if (Processor.isString(value.getClass())) {
+            return newValue + to.symbol;
+        }
+        return Double.parseDouble(newValue.toString());
     }
 
     public static String getRound(double numericValue, SystemType systemType, String formatterPatter) {
@@ -101,7 +94,7 @@ public class Processor {
 
         var result = "";
 
-        if (Objects.equals(formatterPatter, INTEIRO)) {
+        if (Objects.equals(formatterPatter, INTEGER)) {
             result = String.valueOf(i);
         } else {
 
@@ -125,8 +118,7 @@ public class Processor {
         return result;
     }
 
-    public static <T> boolean isList(T item) {
-        var baseName = item.getClass().getName().toLowerCase();
-        return LIST_KEYS.stream().anyMatch(baseName::contains);
+    public static Boolean isString(Class clazz) {
+        return clazz.equals(String.class);
     }
 }

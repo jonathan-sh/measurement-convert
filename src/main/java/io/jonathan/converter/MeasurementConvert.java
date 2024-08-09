@@ -17,5 +17,5 @@ public @interface MeasurementConvert {
 
     Measurement imperial() default Measurement.NONE;
 
-    String formatter() default Processor.INTEIRO;
+    String formatter() default Processor.INTEGER;
 }

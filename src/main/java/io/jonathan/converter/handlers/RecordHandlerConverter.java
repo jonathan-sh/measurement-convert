@@ -1,21 +1,26 @@
 package io.jonathan.converter.handlers;
 
 
-import io.jonathan.converter.MeasurementConvert;
 import io.jonathan.converter.MeasurementConverter;
 import io.jonathan.converter.SystemType;
-import io.jonathan.converter.functions.Processor;
+import org.jboss.logging.Logger;
 
 import java.lang.reflect.RecordComponent;
-import java.util.List;
 import java.util.Optional;
 
+import static io.jonathan.converter.handlers.UtilHandler.allowToPerformConversion;
+import static io.jonathan.converter.handlers.UtilHandler.convertList;
+import static io.jonathan.converter.handlers.UtilHandler.convertSingle;
+import static io.jonathan.converter.handlers.UtilHandler.isList;
+import static io.jonathan.converter.handlers.UtilHandler.isNotMeasurementConvertItem;
+
 public class RecordHandlerConverter {
+    private static final Logger logger = Logger.getLogger(ClassHandlerConverter.class);
 
-
-    public static <T> Optional<T> apply(T item, SystemType systemType) {
+    @SuppressWarnings("unchecked")
+    public static <T> Optional<T> apply(T father, SystemType systemType) {
         try {
-            var entity = item.getClass();
+            var entity = father.getClass();
             var components = entity.getRecordComponents();
             Object[] args = new Object[entity.getRecordComponents().length];
             Class<?>[] types = new Class<?>[entity.getRecordComponents().length];
@@ -27,45 +32,32 @@ public class RecordHandlerConverter {
 
                 var field = entity.getDeclaredField(component.getAccessor().getName());
                 types[index] = field.getType();
-                var value = component.getAccessor().invoke(item);
+                var value = component.getAccessor().invoke(father);
 
-                if (value == null) {
-                    args[index] = null;
-                    continue;
-                }
-
-                var fieldType = field.getType();
-
-                if (fieldType == List.class) {
-                    var list = (List<Object>) value;
-                    var converted = list.stream().map(it -> MeasurementConverter.applySystem(it, systemType).get()).toList();
-                    args[index] = converted;
-                    continue;
-                }
-
-                if (Processor.requireReflection(fieldType)) {
-                    args[index] = MeasurementConverter.applySystem(value, systemType).orElse(value);
-                    continue;
-                }
-
-                if (!Processor.isString(fieldType)) {
+                if (value == null || isNotMeasurementConvertItem(field)) {
                     args[index] = value;
                     continue;
                 }
 
-                if (!field.isAnnotationPresent(MeasurementConvert.class)) {
-                    args[index] = value;
+                if (allowToPerformConversion(field)) {
+                    var newValue = convertSingle(field, value, systemType, father);
+                    args[index] = newValue;
                     continue;
                 }
 
-                args[index] = Processor.getConvertValue(field, value, systemType, item.getClass());
+                if (isList(field)) {
+                    var newValue = convertList(field, value, systemType, father);
+                    args[index] = newValue;
+                    continue;
+                }
+
+                var newValue = MeasurementConverter.applySystem(value, systemType).orElse(value);
+                args[index] = newValue;
             }
-
             return Optional.of((T) entity.getConstructor(types).newInstance(args));
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            logger.error(e.getMessage());
+            return Optional.empty();
         }
-
-        return Optional.of(item);
     }
 }

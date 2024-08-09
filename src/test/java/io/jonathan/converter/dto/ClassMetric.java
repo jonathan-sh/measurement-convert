@@ -9,13 +9,13 @@ import static io.jonathan.converter.Measurement.CELSIUS;
 import static io.jonathan.converter.Measurement.FAHRENHEIT;
 
 
-public class ClassImperialExampleData {
-    @MeasurementConvert(current = FAHRENHEIT, metric = CELSIUS, imperial = FAHRENHEIT)
+public class ClassMetric {
+    @MeasurementConvert(current = CELSIUS, metric = CELSIUS, imperial = FAHRENHEIT)
     public String temperature;
 
     public LocalDateTime now;
 
-    public ClassImperialExampleData(String temperature, LocalDateTime now) {
+    public ClassMetric(String temperature, LocalDateTime now) {
         this.temperature = temperature;
         this.now = now;
     }

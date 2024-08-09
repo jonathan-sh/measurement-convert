@@ -1,55 +1,54 @@
 package io.jonathan.converter.handlers;
 
 
-import io.jonathan.converter.MeasurementConvert;
 import io.jonathan.converter.MeasurementConverter;
 import io.jonathan.converter.SystemType;
-import io.jonathan.converter.functions.Processor;
+import org.jboss.logging.Logger;
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
+import static io.jonathan.converter.handlers.UtilHandler.allowToPerformConversion;
+import static io.jonathan.converter.handlers.UtilHandler.convertList;
+import static io.jonathan.converter.handlers.UtilHandler.convertSingle;
+import static io.jonathan.converter.handlers.UtilHandler.isList;
+import static io.jonathan.converter.handlers.UtilHandler.isNotMeasurementConvertItem;
+
 public class ClassHandlerConverter {
+    private static final Logger logger = Logger.getLogger(ClassHandlerConverter.class);
 
-    public static <T> Optional<T> applySystem(T item, SystemType systemType) {
+    public static <T> Optional<T> applySystem(T father, SystemType systemType) {
         try {
-            var fields = item.getClass().getDeclaredFields();
+            var fields = father.getClass().getDeclaredFields();
             for (Field field : fields) {
+
+                var value = field.get(father);
+
+                if (value == null || isNotMeasurementConvertItem(field)) continue;
+
+                if (allowToPerformConversion(field)) {
+                    var newValue = convertSingle(field, value, systemType, father);
+                    field.setAccessible(true);
+                    field.set(father, newValue);
+                    continue;
+                }
+
+                if (isList(field)) {
+                    var newValue = convertList(field, value, systemType, father);
+                    field.setAccessible(true);
+                    field.set(father, newValue);
+                    continue;
+                }
+
+                var newValue = MeasurementConverter.applySystem(value, systemType).orElse(value);
                 field.setAccessible(true);
-                var value = field.get(item);
-
-                if (value == null) continue;
-
-                if (value.getClass() == ArrayList.class) {
-                    //todo remove that validation and create a annotation to prevent ths list with Long, String types
-                    var list = (List<Object>) value;
-                    var converted = list.stream().map(it -> MeasurementConverter.applySystem(it, systemType).get()).toList();
-                    field.set(item, converted);
-                    continue;
-                }
-
-                var fieldType = field.getType();
-
-                if (Processor.requireReflection(fieldType)) {
-                    var newValue = MeasurementConverter.applySystem(value, systemType).orElse(value);
-                    field.set(item, newValue);
-                    continue;
-                }
-
-                if (!Processor.isString(fieldType)) continue;
-
-                if (!field.isAnnotationPresent(MeasurementConvert.class)) continue;
-
-                var newValue = Processor.getConvertValue(field, value, systemType, item.getClass());
-                field.set(item, newValue);
+                field.set(father, newValue);
             }
 
-            return Optional.of(item);
+            return Optional.of(father);
         } catch (Exception e) {
-            System.out.println(e.getMessage());
-            return Optional.of(item);
+            logger.error(e.getMessage());
+            return Optional.empty();
         }
     }
 }

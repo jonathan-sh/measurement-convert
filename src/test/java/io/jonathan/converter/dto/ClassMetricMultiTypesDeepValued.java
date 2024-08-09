@@ -3,32 +3,48 @@ package io.jonathan.converter.dto;
 import io.jonathan.converter.MeasurementConvert;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import static io.jonathan.converter.Measurement.CELSIUS;
 import static io.jonathan.converter.Measurement.FAHRENHEIT;
 
 
-public class MultiTypesDeepValuedExampleData {
-    @MeasurementConvert(current = CELSIUS, metric = CELSIUS, imperial = FAHRENHEIT)
-    public String temperature;
-
+public class ClassMetricMultiTypesDeepValued {
     public LocalDateTime now;
 
-    public ClassMetricExampleData classMetricExampleData;
-    public RecordMetricExampleData recordMetricExampleData;
+    @MeasurementConvert(current = CELSIUS, metric = CELSIUS, imperial = FAHRENHEIT)
+    public String temperatureInString;
 
+    @MeasurementConvert(current = CELSIUS, metric = CELSIUS, imperial = FAHRENHEIT)
+    public Double temperatureInDouble;
+
+    @MeasurementConvert
+    public ClassMetric classMetric;
+
+    @MeasurementConvert
+    public RecordMetric recordMetric;
+
+    @MeasurementConvert
     public InternalClass internalClass;
+
+    @MeasurementConvert
     public InternalRecord internalRecord;
 
-    public MultiTypesDeepValuedExampleData(String temperature,
+    @MeasurementConvert(current = CELSIUS, metric = CELSIUS, imperial = FAHRENHEIT)
+    public List<String> temperatureInStringList;
+
+    @MeasurementConvert(current = CELSIUS, metric = CELSIUS, imperial = FAHRENHEIT)
+    public List<Double> temperatureInDoubleList;
+
+    public ClassMetricMultiTypesDeepValued(String temperatureInString,
                                            LocalDateTime now,
-                                           ClassMetricExampleData classMetricExampleData,
-                                           RecordMetricExampleData recordMetricExampleData,
+                                           ClassMetric classMetric,
+                                           RecordMetric recordMetric,
                                            InternalClass internalClass, InternalRecord internalRecord) {
-        this.temperature = temperature;
+        this.temperatureInString = temperatureInString;
         this.now = now;
-        this.classMetricExampleData = classMetricExampleData;
-        this.recordMetricExampleData = recordMetricExampleData;
+        this.classMetric = classMetric;
+        this.recordMetric = recordMetric;
         this.internalClass = internalClass;
         this.internalRecord = internalRecord;
     }
