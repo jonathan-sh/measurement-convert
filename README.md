@@ -1,6 +1,7 @@
 ## About
 
 Provides a simple way to make measurement conversions between METRIC and IMPERIAL systems.
+> A special thanks to @lat94 for the support :).
 
 ## Install
 
@@ -98,7 +99,7 @@ public @interface MeasurementConvert {
 }
 ```
 
-## Adding a New Conversion Function:
+## Adding a New Conversion Function
 
 To introduce a new conversion function, follow these steps:
 
