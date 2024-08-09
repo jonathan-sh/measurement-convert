@@ -11,11 +11,27 @@ import java.lang.annotation.Target;
 @Target({ElementType.TYPE, ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface MeasurementConvert {
+
+    /**
+     * The unit of measurement in which the object will be instantiated
+     */
     Measurement current() default Measurement.NONE;
 
+
+    /**
+     * The desired unit of measurement when the metric system was applied
+     */
     Measurement metric() default Measurement.NONE;
 
+
+    /**
+     * The desired unit of measurement when the imperial system was applied
+     */
     Measurement imperial() default Measurement.NONE;
 
-    String formatter() default Processor.INTEGER;
+
+    /**
+     * Controls the output format in DECIMAL(#.##) or INTEGER(#)
+     */
+    String formatter() default Processor.DECIMAL;
 }
