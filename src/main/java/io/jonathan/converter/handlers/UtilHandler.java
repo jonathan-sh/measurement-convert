@@ -22,7 +22,7 @@ public class UtilHandler {
 
         if (allowToPerformConversion(firstElement)) {
             return list.stream()
-                    .map(it -> Processor.getConvertValue(field, it, systemType, father))
+                    .map(it -> Processor.getConvertedFinalValue(field, it, systemType, father))
                     .toList();
         }
 
@@ -32,7 +32,7 @@ public class UtilHandler {
     }
 
     static <T> Object convertSingle(Field field, Object value, SystemType systemType, T father) {
-        return Processor.getConvertValue(field, value, systemType, father);
+        return Processor.getConvertedFinalValue(field, value, systemType, father);
     }
 
     public static Boolean allowToPerformConversion(Field field) {

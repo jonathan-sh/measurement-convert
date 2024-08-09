@@ -29,37 +29,46 @@ public class Processor {
     public static final String DECIMAL = "#.##";
 
     static {
-        pushConvertFunction(new CelsiusFahrenheit());
-        pushConvertFunction(new CentimeterFoots());
-        pushConvertFunction(new CentimeterInches());
-        pushConvertFunction(new HectaresAcres());
-        pushConvertFunction(new KilometerHourMilesHour());
-        pushConvertFunction(new LiterGallon());
-        pushConvertFunction(new LiterHectaresGallonAcres());
-        pushConvertFunction(new MillimeterInches());
-        pushConvertFunction(new SquareCentimeterSquareFoots());
-        pushConvertFunction(new SquareCentimeterSquareInches());
-        pushConvertFunction(new SquareMeterAcres());
-        pushConvertFunction(new SquareMeterHectares());
-        pushConvertFunction(new PascalPoundsPerSquareInch());
+        registerConversionFunctions(new CelsiusFahrenheit());
+        registerConversionFunctions(new CentimeterFoots());
+        registerConversionFunctions(new CentimeterInches());
+        registerConversionFunctions(new HectaresAcres());
+        registerConversionFunctions(new KilometerHourMilesHour());
+        registerConversionFunctions(new LiterGallon());
+        registerConversionFunctions(new LiterHectaresGallonAcres());
+        registerConversionFunctions(new MillimeterInches());
+        registerConversionFunctions(new SquareCentimeterSquareFoots());
+        registerConversionFunctions(new SquareCentimeterSquareInches());
+        registerConversionFunctions(new SquareMeterAcres());
+        registerConversionFunctions(new SquareMeterHectares());
+        registerConversionFunctions(new PascalPoundsPerSquareInch());
     }
 
-
-    private static void pushConvertFunction(ConvertFunction convertFunction) {
+    private static void registerConversionFunctions(ConvertFunction convertFunction) {
         var keyToApply = convertFunction.from() + "_" + convertFunction.to();
         var keyToReverse = convertFunction.to() + "_" + convertFunction.from();
         CONVERTER_FUNCTION_MAP.put(keyToApply, convertFunction::apply);
         CONVERTER_FUNCTION_MAP.put(keyToReverse, convertFunction::reverse);
     }
 
+    public static Object getConvertedFinalValue(Field field, Object value, SystemType systemType, Object father) {
+        var converted = getConvertedValue(field, value, systemType, father);
+        MeasurementConvert config = field.getAnnotation(MeasurementConvert.class);
+        if (isString(value)) {
+            var rounded = getRound(converted, systemType, config.formatter());
+            var symbol = SystemType.METRIC == systemType ? config.metric().symbol : config.imperial().symbol;
+            return rounded + symbol;
+        }
 
-    public static Object getConvertValue(Field field, Object value, SystemType systemType, Object father) {
+        return converted;
+    }
+
+    private static Double getConvertedValue(Field field, Object value, SystemType systemType, Object father) {
         MeasurementConvert config = field.getAnnotation(MeasurementConvert.class);
         var from = config.current();
         var to = config.metric();
         if (systemType == SystemType.IMPERIAL) to = config.imperial();
 
-        var formatterPatter = config.formatter();
         var doubleValue = 0.0;
         try {
             doubleValue = Double.parseDouble(value.toString());
@@ -68,34 +77,23 @@ public class Processor {
             throw new RuntimeException("The value [" + value + "] inside (" + file + ") " +
                     "is not a valid number string. Remove @MeasurementConvert or fix it.");
         }
+        if (from == to) return doubleValue;
 
-        Object newValue = null;
-
-        if (from == to) {
-            newValue = getRound(doubleValue, systemType, formatterPatter);
-        } else {
-            var functionKey = from + "_" + to;
-            if (!CONVERTER_FUNCTION_MAP.containsKey(functionKey)) {
-                throw new RuntimeException("Convert function [" + functionKey + "] not implemented yet");
-            }
-
-            var converted = CONVERTER_FUNCTION_MAP.get(functionKey).apply(doubleValue);
-            newValue = getRound(converted, systemType, formatterPatter);
+        var functionKey = from + "_" + to;
+        if (!CONVERTER_FUNCTION_MAP.containsKey(functionKey)) {
+            throw new RuntimeException("Convert function [" + functionKey + "] not implemented yet");
         }
 
-        if (Processor.isString(value.getClass())) {
-            return newValue + to.symbol;
-        }
-        return Double.parseDouble(newValue.toString());
+        return CONVERTER_FUNCTION_MAP.get(functionKey).apply(doubleValue);
     }
 
-    public static String getRound(double numericValue, SystemType systemType, String formatterPatter) {
-        int i = Double.valueOf(numericValue).intValue();
+    static String getRound(double numericValue, SystemType systemType, String formatterPatter) {
+        int integerValue = Double.valueOf(numericValue).intValue();
 
         var result = "";
 
         if (Objects.equals(formatterPatter, INTEGER)) {
-            result = String.valueOf(i);
+            result = String.valueOf(integerValue);
         } else {
 
             String stringDecimal = String.valueOf(numericValue).split("\\.")[1];
@@ -106,11 +104,11 @@ public class Processor {
             for (char c : charArrayDecimal) sun += Integer.parseInt(String.valueOf(c));
 
             if (sun == 0) {
-                result = String.valueOf(i);
+                result = String.valueOf(integerValue);
             } else if (charArrayDecimal.length > 1 && stringDecimal.toCharArray()[1] == '0') {
-                result = i + "." + charArrayDecimal[0];
+                result = integerValue + "." + charArrayDecimal[0];
             } else {
-                result = i + "." + stringDecimal;
+                result = integerValue + "." + stringDecimal;
             }
         }
 
@@ -118,7 +116,7 @@ public class Processor {
         return result;
     }
 
-    public static Boolean isString(Class clazz) {
-        return clazz.equals(String.class);
+    private static boolean isString(Object item) {
+        return item.getClass().equals(String.class);
     }
 }

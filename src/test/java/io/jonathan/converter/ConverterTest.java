@@ -79,7 +79,7 @@ public class ConverterTest {
         var toConvert = new ClassMetricList(38.00, LocalDateTime.now());
         var imperial = MeasurementConverter.applyImperialSystem(toConvert);
         Assertions.assertTrue(imperial.isPresent());
-        Assertions.assertEquals(100.00, imperial.get().temperature);
+        Assertions.assertEquals(100.4, imperial.get().temperature);
     }
 
     @Test
@@ -89,24 +89,26 @@ public class ConverterTest {
         toConvert.temperatureList = List.of(38.00, 38.00, 38.00);
         var imperial = MeasurementConverter.applyImperialSystem(toConvert);
         Assertions.assertTrue(imperial.isPresent());
-        Assertions.assertEquals(100.00, imperial.get().temperature);
-        Assertions.assertEquals(100.00, imperial.get().temperatureList.get(0));
-        Assertions.assertEquals(100.00, imperial.get().temperatureList.get(1));
-        Assertions.assertEquals(100.00, imperial.get().temperatureList.get(2));
+        Assertions.assertEquals(100.4, imperial.get().temperature);
+        Assertions.assertEquals(100.4, imperial.get().temperatureList.get(0));
+        Assertions.assertEquals(100.4, imperial.get().temperatureList.get(1));
+        Assertions.assertEquals(100.4, imperial.get().temperatureList.get(2));
     }
 
     @Test
     @DisplayName("Class with a list of string input")
     public void classWithListStringInput() {
+        MeasurementConverter.applyImperialSystem(null);
+
         var toConvert = new ClassMetricList(38.00, LocalDateTime.now());
         toConvert.temperatureList = List.of(38.00, 38.00, 38.00);
         toConvert.temperatureListString = List.of("38.00", "38.00", "38.00");
         var imperial = MeasurementConverter.applyImperialSystem(toConvert);
         Assertions.assertTrue(imperial.isPresent());
-        Assertions.assertEquals(100.00, imperial.get().temperature);
-        Assertions.assertEquals(100.00, imperial.get().temperatureList.get(0));
-        Assertions.assertEquals(100.00, imperial.get().temperatureList.get(1));
-        Assertions.assertEquals(100.00, imperial.get().temperatureList.get(2));
+        Assertions.assertEquals(100.4, imperial.get().temperature);
+        Assertions.assertEquals(100.4, imperial.get().temperatureList.get(0));
+        Assertions.assertEquals(100.4, imperial.get().temperatureList.get(1));
+        Assertions.assertEquals(100.4, imperial.get().temperatureList.get(2));
         Assertions.assertEquals("100ºF", imperial.get().temperatureListString.get(0));
         Assertions.assertEquals("100ºF", imperial.get().temperatureListString.get(1));
         Assertions.assertEquals("100ºF", imperial.get().temperatureListString.get(2));
@@ -125,10 +127,10 @@ public class ConverterTest {
                 new ClassMetric("38", LocalDateTime.now()));
         var imperial = MeasurementConverter.applyImperialSystem(toConvert);
         Assertions.assertTrue(imperial.isPresent());
-        Assertions.assertEquals(100.00, imperial.get().temperature);
-        Assertions.assertEquals(100.00, imperial.get().temperatureList.get(0));
-        Assertions.assertEquals(100.00, imperial.get().temperatureList.get(1));
-        Assertions.assertEquals(100.00, imperial.get().temperatureList.get(2));
+        Assertions.assertEquals(100.4, imperial.get().temperature);
+        Assertions.assertEquals(100.4, imperial.get().temperatureList.get(0));
+        Assertions.assertEquals(100.4, imperial.get().temperatureList.get(1));
+        Assertions.assertEquals(100.4, imperial.get().temperatureList.get(2));
         Assertions.assertEquals("100ºF", imperial.get().temperatureListString.get(0));
         Assertions.assertEquals("100ºF", imperial.get().temperatureListString.get(1));
         Assertions.assertEquals("100ºF", imperial.get().temperatureListString.get(2));
@@ -164,9 +166,9 @@ public class ConverterTest {
         Assertions.assertEquals("100ºF", result.temperatureInStringList.get(1));
 
         //double list
-        Assertions.assertEquals(100.00, result.temperatureInDouble);
-        Assertions.assertEquals(100.00, result.temperatureInDoubleList.get(0));
-        Assertions.assertEquals(100.00, result.temperatureInDoubleList.get(1));
+        Assertions.assertEquals(100.4, result.temperatureInDouble);
+        Assertions.assertEquals(100.4, result.temperatureInDoubleList.get(0));
+        Assertions.assertEquals(100.4, result.temperatureInDoubleList.get(1));
 
         //class and record
         Assertions.assertEquals("100ºF", result.classMetric.temperature);
