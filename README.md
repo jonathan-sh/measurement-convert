@@ -1,3 +1,5 @@
+[![run-test](https://github.com/jonathan-sh/measurement-convert/actions/workflows/maven.yml/badge.svg)](https://github.com/jonathan-sh/measurement-convert/actions/workflows/maven.yml)
+
 ## About
 
 Provides a simple way to make measurement conversions between METRIC and IMPERIAL systems.
