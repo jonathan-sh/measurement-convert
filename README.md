@@ -1,7 +1,7 @@
 ## About
 
 Provides a simple way to make measurement conversions between METRIC and IMPERIAL systems.
-> A special thanks to @lat94 for the support :).
+> A special thanks to [@lat94](https://github.com/lat94) for the support 😊.
 
 ## Install
 
