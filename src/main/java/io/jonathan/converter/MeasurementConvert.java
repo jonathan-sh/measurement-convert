@@ -1,7 +1,7 @@
 package io.jonathan.converter;
 
 
-import io.jonathan.converter.functions.Processor;
+import io.jonathan.converter.functions.MeasurementConvertProcessor;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -33,5 +33,5 @@ public @interface MeasurementConvert {
     /**
      * Controls the output format in DECIMAL(#.##) or INTEGER(#)
      */
-    String formatter() default Processor.DECIMAL;
+    String formatter() default MeasurementConvertProcessor.DECIMAL;
 }

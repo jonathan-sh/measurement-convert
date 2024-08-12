@@ -3,7 +3,7 @@ package io.jonathan.converter.handlers;
 import io.jonathan.converter.MeasurementConvert;
 import io.jonathan.converter.MeasurementConverter;
 import io.jonathan.converter.SystemType;
-import io.jonathan.converter.functions.Processor;
+import io.jonathan.converter.functions.MeasurementConvertProcessor;
 
 import java.lang.reflect.Field;
 import java.util.List;
@@ -22,7 +22,7 @@ public class UtilHandler {
 
         if (allowToPerformConversion(firstElement)) {
             return list.stream()
-                    .map(it -> Processor.getConvertedFinalValue(field, it, systemType, father))
+                    .map(it -> MeasurementConvertProcessor.getConvertedFinalValue(field, it, systemType, father))
                     .toList();
         }
 
@@ -32,7 +32,7 @@ public class UtilHandler {
     }
 
     static <T> Object convertSingle(Field field, Object value, SystemType systemType, T father) {
-        return Processor.getConvertedFinalValue(field, value, systemType, father);
+        return MeasurementConvertProcessor.getConvertedFinalValue(field, value, systemType, father);
     }
 
     public static Boolean allowToPerformConversion(Field field) {

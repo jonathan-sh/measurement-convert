@@ -2,7 +2,7 @@ package io.jonathan.converter.functions;
 
 import io.jonathan.converter.Measurement;
 
-public interface ConvertFunction {
+public interface MeasurementConvertFunction {
 
     Measurement from();
 

@@ -3,7 +3,7 @@
 ## About
 
 Provides a simple way to make measurement conversions between METRIC and IMPERIAL systems.
-> A special thanks to [@lat94](https://github.com/lat94) for the support 😊.
+> A special thanks to [@lat94](https://github.com/lat94) for being my guinea pig and for the suggestions 😊.
 
 ## Install
 
@@ -101,10 +101,38 @@ public @interface MeasurementConvert {
 }
 ```
 
-## Adding a New Conversion Function
+## Adding a new conversion function
 
-To introduce a new conversion function, follow these steps:
+To add new measurement conversion functions, follow these steps:
 
-1. Develop a new implementation using the `ConvertFunction` interface.
-2. Incorporate your implementation into the `CONVERTER_FUNCTION_MAP` using the `pushConvertFunction` function within
-   the `Processor` file.
+1. Create a class that implements the MeasurementConvertFunction interface.
+
+```java
+public class MyNewFunction implements MeasurementConvertFunction {
+    @Override
+    public Measurement from() {
+        return null;
+    }
+
+    @Override
+    public Measurement to() {
+        return null;
+    }
+
+    @Override
+    public Double apply(Double value) {
+        return 0.0;
+    }
+
+    @Override
+    public Double reverse(Double value) {
+        return 0.0;
+    }
+}
+```
+
+2. Register your conversion function.
+
+```java
+MeasurementConvertProcessor.registerConversionFunctions(new MyNewFunction());
+```

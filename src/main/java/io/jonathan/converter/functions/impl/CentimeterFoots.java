@@ -1,12 +1,12 @@
 package io.jonathan.converter.functions.impl;
 
 import io.jonathan.converter.Measurement;
-import io.jonathan.converter.functions.ConvertFunction;
+import io.jonathan.converter.functions.MeasurementConvertFunction;
 
 import static io.jonathan.converter.Measurement.CENTIMETER;
 import static io.jonathan.converter.Measurement.FOOT;
 
-public class CentimeterFoots implements ConvertFunction {
+public class CentimeterFoots implements MeasurementConvertFunction {
     @Override
     public Measurement from() {
         return CENTIMETER;

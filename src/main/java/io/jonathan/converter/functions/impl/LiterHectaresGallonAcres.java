@@ -1,12 +1,12 @@
 package io.jonathan.converter.functions.impl;
 
 import io.jonathan.converter.Measurement;
-import io.jonathan.converter.functions.ConvertFunction;
+import io.jonathan.converter.functions.MeasurementConvertFunction;
 
 import static io.jonathan.converter.Measurement.GALLON_PER_ACRES;
 import static io.jonathan.converter.Measurement.LITER_PER_HECTARES;
 
-public class LiterHectaresGallonAcres implements ConvertFunction {
+public class LiterHectaresGallonAcres implements MeasurementConvertFunction {
     @Override
     public Measurement from() {
         return LITER_PER_HECTARES;

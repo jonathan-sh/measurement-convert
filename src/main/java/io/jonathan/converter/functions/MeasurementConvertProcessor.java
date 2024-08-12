@@ -23,7 +23,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
 
-public class Processor {
+public class MeasurementConvertProcessor {
     public static final Map<String, Function<Double, Double>> CONVERTER_FUNCTION_MAP = new HashMap<>();
     public static final String INTEGER = "#";
     public static final String DECIMAL = "#.##";
@@ -44,11 +44,11 @@ public class Processor {
         registerConversionFunctions(new PascalPoundsPerSquareInch());
     }
 
-    private static void registerConversionFunctions(ConvertFunction convertFunction) {
-        var keyToApply = convertFunction.from() + "_" + convertFunction.to();
-        var keyToReverse = convertFunction.to() + "_" + convertFunction.from();
-        CONVERTER_FUNCTION_MAP.put(keyToApply, convertFunction::apply);
-        CONVERTER_FUNCTION_MAP.put(keyToReverse, convertFunction::reverse);
+    public static void registerConversionFunctions(MeasurementConvertFunction measurementConvertFunction) {
+        var keyToApply = measurementConvertFunction.from() + "_" + measurementConvertFunction.to();
+        var keyToReverse = measurementConvertFunction.to() + "_" + measurementConvertFunction.from();
+        CONVERTER_FUNCTION_MAP.put(keyToApply, measurementConvertFunction::apply);
+        CONVERTER_FUNCTION_MAP.put(keyToReverse, measurementConvertFunction::reverse);
     }
 
     public static Object getConvertedFinalValue(Field field, Object value, SystemType systemType, Object father) {
