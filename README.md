@@ -7,13 +7,33 @@ Provides a simple way to make measurement conversions between METRIC and IMPERIA
 
 ## Install
 
-```xml
+Step 1: add the dependency
 
+```xml
 <dependency>
     <groupId>io.jonathan</groupId>
     <artifactId>measurement-convert</artifactId>
     <version>1.0-SNAPSHOT</version>
 </dependency>
+```
+Step 2: add the repository
+
+```xml
+<repositories>
+    <repository>
+        <id>github</id>
+        <url>https://maven.pkg.github.com/jonathan-sh/measurement-convert</url>
+        <snapshots>
+            <enabled>true</enabled>
+        </snapshots>
+    </repository>
+</repositories>
+```
+
+Step 3: install the package
+
+```shell
+mvn install -U
 ```
 
 ## Using
