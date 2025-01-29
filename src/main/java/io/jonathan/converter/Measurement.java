@@ -22,9 +22,12 @@ public enum Measurement {
     LITER_PER_HECTARES("l/ha"),
     GALLON_PER_ACRES("gal/a"),
     WATTS_PER_SQUARE_METTER("w/m²"),
-    NONE("none"),
+    NONE(""),
     PASCAL("Pa"),
-    POUNDS_PER_SQUARE_INCH("PSI");
+    POUNDS_PER_SQUARE_INCH("PSI"),
+    HECTARES_PER_HOUR("ha/h"),
+    ACRES_PER_HOUR("acre/h"),
+    SQUARE_METERS_PER_HOUR("m²/h");
 
     public final String symbol;
 

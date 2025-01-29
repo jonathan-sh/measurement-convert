@@ -7,8 +7,7 @@ import org.junit.jupiter.api.Test;
 
 import static io.jonathan.converter.SystemType.IMPERIAL;
 import static io.jonathan.converter.SystemType.METRIC;
-import static io.jonathan.converter.functions.MeasurementConvertProcessor.DECIMAL;
-import static io.jonathan.converter.functions.MeasurementConvertProcessor.INTEGER;
+import static io.jonathan.converter.functions.MeasurementConvertProcessor.*;
 
 class MeasurementConvertProcessorTest {
 
@@ -35,6 +34,28 @@ class MeasurementConvertProcessorTest {
         result = MeasurementConvertProcessor.getRound(12.30, METRIC, INTEGER);
         Assertions.assertEquals("12", result);
 
+        // METRIC with DINAMIC
+        result = MeasurementConvertProcessor.getRound(12.00, METRIC, DINAMIC);
+        Assertions.assertEquals("12", result);
+
+        result = MeasurementConvertProcessor.getRound(12.34, METRIC, DINAMIC);
+        Assertions.assertEquals("12", result);
+
+        result = MeasurementConvertProcessor.getRound(12.30, METRIC, DINAMIC);
+        Assertions.assertEquals("12", result);
+
+        result = MeasurementConvertProcessor.getRound(12.05, METRIC, DINAMIC);
+        Assertions.assertEquals("12", result);
+
+        result = MeasurementConvertProcessor.getRound(0.00, METRIC, DINAMIC);
+        Assertions.assertEquals("0", result);
+
+        result = MeasurementConvertProcessor.getRound(0.99, METRIC, DINAMIC);
+        Assertions.assertEquals("0,99", result);
+
+        result = MeasurementConvertProcessor.getRound(0.01, METRIC, DINAMIC);
+        Assertions.assertEquals("0,01", result);
+
 
         //IMPERIAL
         result = MeasurementConvertProcessor.getRound(12.00, SystemType.IMPERIAL, DECIMAL);
@@ -54,6 +75,28 @@ class MeasurementConvertProcessorTest {
 
         result = MeasurementConvertProcessor.getRound(12.30, IMPERIAL, INTEGER);
         Assertions.assertEquals("12", result);
+
+        // IMPERIAL with DINAMIC
+        result = MeasurementConvertProcessor.getRound(12.00, SystemType.IMPERIAL, DINAMIC);
+        Assertions.assertEquals("12", result);
+
+        result = MeasurementConvertProcessor.getRound(12.34, SystemType.IMPERIAL, DINAMIC);
+        Assertions.assertEquals("12", result);
+
+        result = MeasurementConvertProcessor.getRound(12.30, SystemType.IMPERIAL, DINAMIC);
+        Assertions.assertEquals("12", result);
+
+        result = MeasurementConvertProcessor.getRound(12.05, SystemType.IMPERIAL, DINAMIC);
+        Assertions.assertEquals("12", result);
+
+        result = MeasurementConvertProcessor.getRound(0.00, SystemType.IMPERIAL, DINAMIC);
+        Assertions.assertEquals("0", result);
+
+        result = MeasurementConvertProcessor.getRound(0.99, SystemType.IMPERIAL, DINAMIC);
+        Assertions.assertEquals("0.99", result);
+
+        result = MeasurementConvertProcessor.getRound(0.01, SystemType.IMPERIAL, DINAMIC);
+        Assertions.assertEquals("0.01", result);
 
     }
 }

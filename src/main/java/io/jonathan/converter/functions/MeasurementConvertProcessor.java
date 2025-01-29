@@ -3,19 +3,7 @@ package io.jonathan.converter.functions;
 
 import io.jonathan.converter.MeasurementConvert;
 import io.jonathan.converter.SystemType;
-import io.jonathan.converter.functions.impl.CelsiusFahrenheit;
-import io.jonathan.converter.functions.impl.CentimeterFoots;
-import io.jonathan.converter.functions.impl.CentimeterInches;
-import io.jonathan.converter.functions.impl.HectaresAcres;
-import io.jonathan.converter.functions.impl.KilometerHourMilesHour;
-import io.jonathan.converter.functions.impl.LiterGallon;
-import io.jonathan.converter.functions.impl.LiterHectaresGallonAcres;
-import io.jonathan.converter.functions.impl.MillimeterInches;
-import io.jonathan.converter.functions.impl.PascalPoundsPerSquareInch;
-import io.jonathan.converter.functions.impl.SquareCentimeterSquareFoots;
-import io.jonathan.converter.functions.impl.SquareCentimeterSquareInches;
-import io.jonathan.converter.functions.impl.SquareMeterAcres;
-import io.jonathan.converter.functions.impl.SquareMeterHectares;
+import io.jonathan.converter.functions.impl.*;
 
 import java.lang.reflect.Field;
 import java.util.HashMap;
@@ -27,6 +15,7 @@ public class MeasurementConvertProcessor {
     public static final Map<String, Function<Double, Double>> CONVERTER_FUNCTION_MAP = new HashMap<>();
     public static final String INTEGER = "#";
     public static final String DECIMAL = "#.##";
+    public static final String DINAMIC = "#|0.##";
 
     static {
         registerConversionFunctions(new CelsiusFahrenheit());
@@ -42,6 +31,9 @@ public class MeasurementConvertProcessor {
         registerConversionFunctions(new SquareMeterAcres());
         registerConversionFunctions(new SquareMeterHectares());
         registerConversionFunctions(new PascalPoundsPerSquareInch());
+        registerConversionFunctions(new HectaresHoursAcresHours());
+        registerConversionFunctions(new SquareMetersHoursAcresHours());
+        registerConversionFunctions(new SquareMetersHoursHectaresHours());
     }
 
     public static void registerConversionFunctions(MeasurementConvertFunction measurementConvertFunction) {
@@ -91,6 +83,11 @@ public class MeasurementConvertProcessor {
         int integerValue = Double.valueOf(numericValue).intValue();
 
         var result = "";
+        if (Objects.equals(formatterPatter, DINAMIC)) {
+            if (integerValue > 0)
+                formatterPatter = INTEGER;
+        }
+
 
         if (Objects.equals(formatterPatter, INTEGER)) {
             result = String.valueOf(integerValue);
