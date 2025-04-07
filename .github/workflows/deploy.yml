@@ -30,15 +30,10 @@ jobs:
 
       - name: Configure Maven settings
         env:
-          MAVEN_SETTINGS_XML: ${{ secrets.MAVEN_SETTINGS_XML }}
+          $GIT_USERNAME: ${{ secrets.$GIT_USERNAME }}
+          $GIT_TOKEN: ${{ secrets.$GIT_TOKEN }}
         run: |
-          if [ -z "$MAVEN_SETTINGS_XML" ]; then
-          echo "Erro: O segredo MAVEN_SETTINGS_XML não foi configurado ou está vazio."
-          exit 1
-          fi
-          echo -e "$MAVEN_SETTINGS_XML" > settings.xml
-          ls -lh settings.xml
-          echo "Tamanho do segredo MAVEN_SETTINGS_XML: ${#MAVEN_SETTINGS_XML}"
+          echo '<settings> <servers> <server> <id>github</id> <username>'$GIT_USERNAME'</username> <password>'$GIT_TOKEN'</password> </server> </servers> </settings>' > settings.xml
 
       - name: Build with Maven (local)
         run: mvn deploy -s settings.xml
