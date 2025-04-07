@@ -34,6 +34,7 @@ jobs:
           GIT_TOKEN: ${{ secrets.GIT_TOKEN }}
         run: |
           echo '<settings> <servers> <server> <id>github</id> <username>'$GIT_USERNAME'</username> <password>'$GIT_TOKEN'</password> </server> </servers> </settings>' > settings.xml
+          ls -lh settings.xml
 
       - name: Build with Maven (local)
         run: mvn deploy -s settings.xml
