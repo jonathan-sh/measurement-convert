@@ -30,8 +30,8 @@ jobs:
 
       - name: Configure Maven settings
         env:
-          $GIT_USERNAME: ${{ secrets.GIT_USERNAME }}
-          $GIT_TOKEN: ${{ secrets.GIT_TOKEN }}
+          GIT_USERNAME: ${{ secrets.GIT_USERNAME }}
+          GIT_TOKEN: ${{ secrets.GIT_TOKEN }}
         run: |
           echo '<settings> <servers> <server> <id>github</id> <username>'$GIT_USERNAME'</username> <password>'$GIT_TOKEN'</password> </server> </servers> </settings>' > settings.xml
 
